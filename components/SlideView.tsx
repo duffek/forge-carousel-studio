@@ -189,7 +189,7 @@ export default function SlideView({
             <T slide={slide} field="body" cls="body small" ph="Supporting line…" editable={editable} onPatch={p} />
           </div>
           {slide.wordmark && wm}
-          <div className="swipe" style={{ left: "auto", right: "5.5cqw" }}>
+          <div className="swipe" style={{ left: "auto", right: "calc(var(--u) * 5.5)" }}>
             swipe
           </div>
         </div>

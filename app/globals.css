@@ -870,18 +870,22 @@ input[type="range"]::-webkit-slider-thumb {
   color: #fff;
   --hscale: 1;
   --bscale: 1;
+  /* Slide unit: 1% of slide width. Container-relative in the app; the PNG
+     export pins it to a fixed px value so DOM-cloning rasterization can't
+     mis-resolve container query units (bullet-wrap export bug). */
+  --u: 1cqw;
 }
 .slide .body {
   font-family: var(--font-body);
   color: #fff;
   font-weight: 500;
-  font-size: calc(4.2cqw * var(--bscale));
+  font-size: calc(calc(var(--u) * 4.2) * var(--bscale));
   line-height: 1.28;
   letter-spacing: -0.005em;
   white-space: pre-line;
 }
 .slide .body.small {
-  font-size: calc(3.6cqw * var(--bscale));
+  font-size: calc(calc(var(--u) * 3.6) * var(--bscale));
 }
 .slide .em {
   font-style: italic;
@@ -889,7 +893,7 @@ input[type="range"]::-webkit-slider-thumb {
   font-weight: 500;
 }
 .slide .kicker {
-  font-size: calc(4cqw * var(--bscale));
+  font-size: calc(calc(var(--u) * 4) * var(--bscale));
   font-weight: 500;
   color: #fff;
   white-space: pre-line;
@@ -904,19 +908,19 @@ input[type="range"]::-webkit-slider-thumb {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  font-size: calc(9.2cqw * var(--hscale));
+  font-size: calc(calc(var(--u) * 9.2) * var(--hscale));
   white-space: pre-line;
 }
 .slide .accent.xl {
-  font-size: calc(11.4cqw * var(--hscale));
+  font-size: calc(calc(var(--u) * 11.4) * var(--hscale));
   line-height: 0.92;
 }
 .slide .accent.xxl {
-  font-size: calc(14cqw * var(--hscale));
+  font-size: calc(calc(var(--u) * 14) * var(--hscale));
   line-height: 0.9;
 }
 .slide .accent.md {
-  font-size: calc(7.6cqw * var(--hscale));
+  font-size: calc(calc(var(--u) * 7.6) * var(--hscale));
   line-height: 0.98;
 }
 .slide [contenteditable] {
@@ -939,58 +943,58 @@ input[type="range"]::-webkit-slider-thumb {
 
 .slide .wordmark {
   position: absolute;
-  left: 5.5cqw;
-  bottom: 4.2cqw;
+  left: calc(var(--u) * 5.5);
+  bottom: calc(var(--u) * 4.2);
   font-family: var(--font-display);
   font-weight: 900;
   color: #fff;
-  font-size: 3.4cqw;
+  font-size: calc(var(--u) * 3.4);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   display: flex;
   align-items: center;
-  gap: 0.9cqw;
+  gap: calc(var(--u) * 0.9);
   z-index: 4;
 }
 .slide .wordmark .dot {
-  width: 1.6cqw;
-  height: 1.6cqw;
+  width: calc(var(--u) * 1.6);
+  height: calc(var(--u) * 1.6);
   background: linear-gradient(180deg, var(--grad-start), var(--grad-end));
   border-radius: 50%;
 }
 .slide .wordmark-logo {
   position: absolute;
-  left: 5.5cqw;
-  bottom: 4.2cqw;
-  height: 5cqw;
+  left: calc(var(--u) * 5.5);
+  bottom: calc(var(--u) * 4.2);
+  height: calc(var(--u) * 5);
   width: auto;
   z-index: 4;
 }
 .slide .swipe {
   position: absolute;
-  left: 5.5cqw;
-  bottom: 4.2cqw;
+  left: calc(var(--u) * 5.5);
+  bottom: calc(var(--u) * 4.2);
   font-family: var(--font-body);
   font-weight: 600;
   color: var(--italic-orange);
-  font-size: 3.4cqw;
+  font-size: calc(var(--u) * 3.4);
   display: flex;
   align-items: center;
-  gap: 1.2cqw;
+  gap: calc(var(--u) * 1.2);
   letter-spacing: 0.01em;
   z-index: 4;
 }
 .slide .swipe .arrow {
-  width: 5.6cqw;
-  height: 5cqw;
+  width: calc(var(--u) * 5.6);
+  height: calc(var(--u) * 5);
   display: block;
 }
 .slide .counter {
   position: absolute;
-  right: 4.5cqw;
-  top: 4cqw;
+  right: calc(var(--u) * 4.5);
+  top: calc(var(--u) * 4);
   font-family: var(--font-mono-f);
-  font-size: 2.1cqw;
+  font-size: calc(var(--u) * 2.1);
   letter-spacing: 0.2em;
   color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
@@ -1004,19 +1008,19 @@ input[type="range"]::-webkit-slider-thumb {
     rgba(255, 255, 255, 0.18),
     transparent
   );
-  margin: 3cqw 0;
+  margin: calc(var(--u) * 3) 0;
 }
 
 .slide .pad {
-  padding: 6.5cqw 6cqw;
+  padding: calc(var(--u) * 6.5) calc(var(--u) * 6);
 }
 .slide .stack {
   display: flex;
   flex-direction: column;
-  gap: 4.4cqw;
+  gap: calc(var(--u) * 4.4);
 }
 .slide .stack.tight {
-  gap: 3cqw;
+  gap: calc(var(--u) * 3);
 }
 .slide .cover {
   position: absolute;
@@ -1024,14 +1028,14 @@ input[type="range"]::-webkit-slider-thumb {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 6.5cqw 6cqw 12cqw;
+  padding: calc(var(--u) * 6.5) calc(var(--u) * 6) calc(var(--u) * 12);
 }
 .slide .cover .inner {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 2.4cqw;
+  gap: calc(var(--u) * 2.4);
 }
 .slide .photo {
   position: absolute;
@@ -1064,11 +1068,11 @@ input[type="range"]::-webkit-slider-thumb {
 .slide .beat {
   position: absolute;
   inset: 0;
-  padding: 8cqw 6cqw;
+  padding: calc(var(--u) * 8) calc(var(--u) * 6);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 4.5cqw;
+  gap: calc(var(--u) * 4.5);
 }
 .slide .composite {
   position: absolute;
@@ -1077,12 +1081,12 @@ input[type="range"]::-webkit-slider-thumb {
   flex-direction: column;
 }
 .slide .composite .top {
-  padding: 6.5cqw 6cqw 4cqw;
+  padding: calc(var(--u) * 6.5) calc(var(--u) * 6) calc(var(--u) * 4);
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 3.4cqw;
+  gap: calc(var(--u) * 3.4);
 }
 .slide .composite .photo {
   position: relative;
@@ -1101,25 +1105,25 @@ input[type="range"]::-webkit-slider-thumb {
 .slide .bullets {
   display: flex;
   flex-direction: column;
-  gap: 2.6cqw;
-  margin-top: 1cqw;
+  gap: calc(var(--u) * 2.6);
+  margin-top: calc(var(--u) * 1);
 }
 .slide .bullets .brow {
   display: flex;
-  gap: 3cqw;
+  gap: calc(var(--u) * 3);
   align-items: flex-start;
   font-family: var(--font-body);
   font-weight: 600;
   color: #fff;
-  font-size: 3.9cqw;
+  font-size: calc(var(--u) * 3.9);
   line-height: 1.25;
 }
 .slide .bullets .brow::before {
   content: "";
   flex: 0 0 auto;
-  width: 2.2cqw;
-  height: 2.2cqw;
-  margin-top: 1.5cqw;
+  width: calc(var(--u) * 2.2);
+  height: calc(var(--u) * 2.2);
+  margin-top: calc(var(--u) * 1.5);
   background: var(--italic-orange);
   border-radius: 50%;
 }
@@ -1163,12 +1167,12 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .slide .ph .plabel {
   position: absolute;
-  left: 4cqw;
-  right: 4cqw;
+  left: calc(var(--u) * 4);
+  right: calc(var(--u) * 4);
   top: 50%;
   transform: translateY(-50%);
   font-family: var(--font-mono-f);
-  font-size: 2.2cqw;
+  font-size: calc(var(--u) * 2.2);
   color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.02em;
   line-height: 1.5;
@@ -1176,16 +1180,16 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .slide .ph .pcorner {
   position: absolute;
-  top: 3.5cqw;
-  left: 3.5cqw;
+  top: calc(var(--u) * 3.5);
+  left: calc(var(--u) * 3.5);
   font-family: var(--font-mono-f);
-  font-size: 1.9cqw;
+  font-size: calc(var(--u) * 1.9);
   letter-spacing: 0.2em;
   color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
 }
 .slide .ph .frame {
   position: absolute;
-  inset: 3.5cqw;
+  inset: calc(var(--u) * 3.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
