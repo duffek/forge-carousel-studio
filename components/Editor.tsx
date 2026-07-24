@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, useRef } from "react";
+import { CSSProperties, useRef, useState } from "react";
 import type { Layout, Meta, Slide, SlideImage } from "@/lib/types";
 import { HAS_IMAGE, LAYOUTS, LAYOUT_LABEL, pad2 } from "@/lib/slides";
 import SlideView from "./SlideView";
@@ -19,6 +19,7 @@ export default function Editor({
   onAdd,
   onDup,
   onDelete,
+  onMove,
   onExportOne,
   exportBusy,
 }: {
@@ -35,12 +36,21 @@ export default function Editor({
   onAdd: (layout: Layout, at?: number | null) => void;
   onDup: (i: number) => void;
   onDelete: (i: number) => void;
+  onMove: (from: number, to: number) => void;
   onExportOne: (i: number) => void;
   exportBusy: boolean;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const [dragI, setDragI] = useState(-1);
+  const [overI, setOverI] = useState(-1);
   const s = slides[current];
   if (!s) return null;
+
+  const drop = (to: number) => {
+    if (dragI >= 0 && dragI !== to) onMove(dragI, to);
+    setDragI(-1);
+    setOverI(-1);
+  };
   const hasImg = HAS_IMAGE[s.layout];
   const total = slides.length;
 
@@ -352,8 +362,33 @@ export default function Editor({
         {slides.map((sl, i) => (
           <div
             key={sl.id}
-            className={"rthumb" + (i === current ? " on" : "")}
+            className={
+              "rthumb" +
+              (i === current ? " on" : "") +
+              (dragI === i ? " dragging" : "") +
+              (overI === i ? " drag-over" : "")
+            }
             onClick={() => setCurrent(i)}
+            draggable
+            onDragStart={(e) => {
+              e.dataTransfer.setData("text/plain", String(i));
+              e.dataTransfer.effectAllowed = "move";
+              setDragI(i);
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "move";
+              setOverI(i);
+            }}
+            onDragLeave={() => setOverI((o) => (o === i ? -1 : o))}
+            onDrop={(e) => {
+              e.preventDefault();
+              drop(i);
+            }}
+            onDragEnd={() => {
+              setDragI(-1);
+              setOverI(-1);
+            }}
           >
             <SlideView
               slide={sl}

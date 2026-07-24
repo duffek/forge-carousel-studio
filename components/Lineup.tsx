@@ -118,13 +118,21 @@ export default function Lineup({
               (overI === i ? " drag-over" : "")
             }
             draggable
-            onDragStart={() => setDragI(i)}
+            onDragStart={(e) => {
+              e.dataTransfer.setData("text/plain", String(i));
+              e.dataTransfer.effectAllowed = "move";
+              setDragI(i);
+            }}
             onDragOver={(e) => {
               e.preventDefault();
+              e.dataTransfer.dropEffect = "move";
               setOverI(i);
             }}
             onDragLeave={() => setOverI((o) => (o === i ? -1 : o))}
-            onDrop={() => drop(i)}
+            onDrop={(e) => {
+              e.preventDefault();
+              drop(i);
+            }}
             onDragEnd={() => {
               setDragI(-1);
               setOverI(-1);

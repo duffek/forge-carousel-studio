@@ -205,6 +205,7 @@ export default function Home() {
             onAdd={st.addSlide}
             onDup={st.dupSlide}
             onDelete={st.delSlide}
+            onMove={st.moveSlide}
             onExportOne={exportOne}
             exportBusy={st.exportBusy}
           />

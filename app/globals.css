@@ -783,6 +783,13 @@ input[type="range"]::-webkit-slider-thumb {
 .rail .rthumb.on {
   border-color: var(--italic-orange);
 }
+.rail .rthumb.dragging {
+  opacity: 0.4;
+}
+.rail .rthumb.drag-over {
+  border-color: var(--italic-orange);
+  box-shadow: 0 0 0 3px rgba(240, 128, 48, 0.18);
+}
 .rail .rthumb .n {
   position: absolute;
   bottom: 2px;

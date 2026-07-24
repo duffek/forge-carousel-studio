@@ -147,7 +147,12 @@ export const useStudio = create<StudioState>()(
           const slides = [...s.slides];
           const [m] = slides.splice(from, 1);
           slides.splice(to, 0, m);
-          return { slides };
+          // keep `current` pointing at the same slide after the move
+          let current = s.current;
+          if (current === from) current = to;
+          else if (from < current && to >= current) current -= 1;
+          else if (from > current && to <= current) current += 1;
+          return { slides, current };
         }),
     }),
     {
