@@ -920,7 +920,9 @@ input[type="range"]::-webkit-slider-thumb {
 }
 .slide [contenteditable]:focus {
   box-shadow: inset 0 0 0 1px rgba(255, 107, 43, 0.85);
-  background: rgba(255, 107, 43, 0.05);
+  /* longhand only: the `background` shorthand would reset background-clip and
+     wipe the gradient-text fill on .accent headlines while editing */
+  background-color: rgba(255, 107, 43, 0.05);
 }
 .slide [contenteditable][data-ph]:empty:before {
   content: attr(data-ph);
