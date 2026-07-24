@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
+import { uploadDataUrl } from "@/lib/supabase";
 
 export const maxDuration = 300;
 
@@ -27,60 +28,65 @@ function mockImage(prompt: string): string {
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 
+interface Body {
+  prompt?: string;
+  projectId?: string;
+  slideId?: string;
+}
+
 export async function POST(req: Request) {
-  if (process.env.MOCK_AI === "1") {
-    let prompt = "";
-    try {
-      const body = (await req.json()) as { prompt?: string };
-      prompt = body.prompt?.trim() ?? "";
-    } catch {
-      return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-    }
-    if (!prompt) {
-      return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
-    }
-    await new Promise((r) => setTimeout(r, 400));
-    return NextResponse.json({ dataUrl: mockImage(prompt) });
-  }
-
-  if (!process.env.GEMINI_API_KEY) {
-    return NextResponse.json(
-      { error: "GEMINI_API_KEY is not set. Add it to .env.local and restart." },
-      { status: 500 },
-    );
-  }
-
-  let prompt: string;
+  let body: Body;
   try {
-    const body = (await req.json()) as { prompt?: string };
-    prompt = body.prompt?.trim() ?? "";
+    body = (await req.json()) as Body;
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
+  const prompt = body.prompt?.trim() ?? "";
+  const { projectId, slideId } = body;
   if (!prompt) {
     return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
   }
-
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  if (!projectId || !slideId) {
+    return NextResponse.json(
+      { error: "projectId and slideId are required" },
+      { status: 400 },
+    );
+  }
 
   try {
-    const response = await ai.models.generateContent({
-      model: IMAGE_MODEL,
-      contents: `Moody, cinematic editorial photograph, portrait 4:5 orientation. No text, words, or lettering anywhere in the image. ${prompt}`,
-      config: {
-        responseModalities: ["IMAGE"],
-        imageConfig: { aspectRatio: "4:5" },
-      },
-    });
+    let dataUrl: string;
 
-    const parts = response.candidates?.[0]?.content?.parts ?? [];
-    const imagePart = parts.find((p) => p.inlineData?.data);
-    if (!imagePart?.inlineData?.data) {
-      throw new Error("Model returned no image");
+    if (process.env.MOCK_AI === "1") {
+      await new Promise((r) => setTimeout(r, 400));
+      dataUrl = mockImage(prompt);
+    } else {
+      if (!process.env.GEMINI_API_KEY) {
+        return NextResponse.json(
+          { error: "GEMINI_API_KEY is not set. Add it to .env.local and restart." },
+          { status: 500 },
+        );
+      }
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: IMAGE_MODEL,
+        contents: `Moody, cinematic editorial photograph, portrait 4:5 orientation. No text, words, or lettering anywhere in the image. ${prompt}`,
+        config: {
+          responseModalities: ["IMAGE"],
+          imageConfig: { aspectRatio: "4:5" },
+        },
+      });
+      const parts = response.candidates?.[0]?.content?.parts ?? [];
+      const imagePart = parts.find((p) => p.inlineData?.data);
+      if (!imagePart?.inlineData?.data) {
+        throw new Error("Model returned no image");
+      }
+      const mime = imagePart.inlineData.mimeType || "image/png";
+      dataUrl = `data:${mime};base64,${imagePart.inlineData.data}`;
     }
-    const mime = imagePart.inlineData.mimeType || "image/png";
-    const dataUrl = `data:${mime};base64,${imagePart.inlineData.data}`;
-    return NextResponse.json({ dataUrl });
+
+    // Persist to storage; the client stores the (small) public URL, not base64.
+    const url = await uploadDataUrl(projectId, slideId, dataUrl);
+    return NextResponse.json({ url });
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     return NextResponse.json({ error: message }, { status: 500 });

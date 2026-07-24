@@ -8,9 +8,12 @@ The original design handoff (spec + working prototype) lives in [`design/`](desi
 
 ## Getting started
 
+Requires Docker (for the local Supabase stack) and the `supabase` CLI.
+
 ```bash
 npm install
-cp .env.local.example .env.local   # add your keys
+supabase start                     # local Postgres + storage (Docker)
+cp .env.local.example .env.local   # add your keys; supabase status shows the URL/key
 npm run dev
 ```
 
@@ -20,14 +23,16 @@ npm run dev
 | --- | --- |
 | `ANTHROPIC_API_KEY` | Carousel text generation (Claude) |
 | `GEMINI_API_KEY` | Image generation (Gemini Nano Banana Pro) |
-| `MOCK_AI=1` | Run without keys — both AI routes serve deterministic mock data |
+| `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | Story storage — from `supabase status` (local) or your hosted project |
+| `MOCK_AI=1` | Run without AI keys — both AI routes serve deterministic mock data |
 | `ANTHROPIC_MODEL` | Optional model override (default `claude-opus-4-8`) |
 | `GEMINI_IMAGE_MODEL` | Optional model override (default `gemini-3-pro-image-preview`) |
 
-Carousels auto-save to the browser's localStorage and restore on reload.
+Stories auto-save to Supabase (Postgres `projects` table + `slides` storage bucket for images). The default view lists every story in progress; open one to work on its slides.
 
 ## Scripts
 
 - `npm run dev` — dev server
 - `npm run build` — production build
 - `npm run lint` — lint
+- `supabase start` / `supabase stop` — local database

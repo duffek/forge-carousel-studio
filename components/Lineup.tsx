@@ -19,7 +19,7 @@ export default function Lineup({
   genAllProgress,
   onExportAll,
   exportBusy,
-  onNewStory,
+  onBackToStories,
 }: {
   slides: Slide[];
   meta: Meta;
@@ -34,7 +34,7 @@ export default function Lineup({
   genAllProgress: string;
   onExportAll: () => void;
   exportBusy: boolean;
-  onNewStory: () => void;
+  onBackToStories: () => void;
 }) {
   const [dragI, setDragI] = useState(-1);
   const [overI, setOverI] = useState(-1);
@@ -67,8 +67,8 @@ export default function Lineup({
           </div>
         </div>
         <div style={{ display: "flex", gap: "10px" }}>
-          <button className="btn ghost" onClick={onNewStory}>
-            New story
+          <button className="btn ghost" onClick={onBackToStories}>
+            ‹ All stories
           </button>
           <button className="btn" disabled={exportBusy} onClick={onExportAll}>
             {exportBusy && <span className="spinner"></span>}Export all PNGs

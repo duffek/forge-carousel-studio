@@ -30,7 +30,24 @@ export interface Meta {
   cta: string;
 }
 
-export type View = "compose" | "lineup" | "editor";
+export type View = "stories" | "compose" | "lineup" | "editor";
+
+export interface ProjectSummary {
+  id: string;
+  title: string;
+  slideCount: number;
+  tone: string;
+  updatedAt: string;
+  coverSlide: Slide | null;
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  meta: Meta;
+  slides: Slide[];
+  updatedAt: string;
+}
 
 export interface GenerateConfig {
   story: string;
