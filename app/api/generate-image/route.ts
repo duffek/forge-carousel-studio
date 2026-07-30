@@ -32,6 +32,8 @@ interface Body {
   prompt?: string;
   projectId?: string;
   slideId?: string;
+  /** Optional brand-mood suffix appended to the prompt (from the story's theme). */
+  styleHint?: string;
 }
 
 export async function POST(req: Request) {
@@ -67,9 +69,10 @@ export async function POST(req: Request) {
         );
       }
       const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const styleHint = body.styleHint?.trim() ? ` ${body.styleHint.trim()}` : "";
       const response = await ai.models.generateContent({
         model: IMAGE_MODEL,
-        contents: `Moody, cinematic editorial photograph, portrait 4:5 orientation. No text, words, or lettering anywhere in the image. ${prompt}`,
+        contents: `Moody, cinematic editorial photograph, portrait 4:5 orientation. No text, words, or lettering anywhere in the image.${styleHint} ${prompt}`,
         config: {
           responseModalities: ["IMAGE"],
           imageConfig: { aspectRatio: "4:5" },

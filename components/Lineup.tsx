@@ -147,6 +147,7 @@ export default function Lineup({
                 index={i}
                 total={slides.length}
                 brand={meta.brand}
+                theme={meta.theme}
                 editable={false}
               />
               <div className="go">

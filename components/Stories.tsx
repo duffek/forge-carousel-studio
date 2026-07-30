@@ -83,6 +83,7 @@ export default function Stories({
                   slide={p.coverSlide}
                   index={0}
                   total={p.slideCount}
+                  theme={p.theme}
                   editable={false}
                 />
               ) : (

@@ -1,7 +1,9 @@
 "use client";
 
 import { CSSProperties, useState } from "react";
-import type { GenerateConfig, Meta, Tone } from "@/lib/types";
+import type { GenerateConfig, Meta, ThemeId, Tone } from "@/lib/types";
+import { DEFAULT_THEME } from "@/lib/themes";
+import ThemePicker from "./ThemePicker";
 
 const TONES: Tone[] = ["Provocative", "Analytical", "Inspirational", "Story-driven"];
 
@@ -32,6 +34,7 @@ export default function Compose({
   const [tone, setTone] = useState<Tone>(initial.tone || "Provocative");
   const [brand, setBrand] = useState(initial.brand || "FoundersForge");
   const [cta, setCta] = useState(initial.cta || "");
+  const [theme, setTheme] = useState<ThemeId>(initial.theme || DEFAULT_THEME);
   const total = points + 2;
 
   return (
@@ -98,6 +101,14 @@ export default function Compose({
           </div>
         </div>
 
+        <div className="fieldset">
+          <div className="flabel">
+            <span className="t">Brand theme</span>
+            <span className="h">colors, fonts &amp; wordmark — switchable later</span>
+          </div>
+          <ThemePicker value={theme} onChange={setTheme} />
+        </div>
+
         <div className="row">
           <div className="fieldset">
             <div className="flabel">
@@ -147,7 +158,7 @@ export default function Compose({
           <button
             className="btn primary lg"
             disabled={busy || !story.trim()}
-            onClick={() => onGenerate({ story, points, tone, brand, cta })}
+            onClick={() => onGenerate({ story, points, tone, brand, cta, theme })}
           >
             {busy && <span className="spinner dark"></span>}
             {busy ? "Generating…" : "Generate carousel"}

@@ -30,6 +30,8 @@ npm run dev
 
 Stories auto-save to Supabase (Postgres `projects` table + `slides` storage bucket for images). The default view lists every story in progress; open one to work on its slides.
 
+Each story has a **brand theme** — FoundersForge, Avante, or Startup Mtn. Summit — controlling slide colors, fonts, and wordmark. Pick it at Compose or switch any time in the editor's Branding panel.
+
 ## Scripts
 
 - `npm run dev` — dev server

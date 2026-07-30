@@ -22,6 +22,7 @@ export async function GET() {
       title: row.title,
       slideCount: row.slides?.length ?? 0,
       tone: row.meta?.tone ?? "",
+      theme: row.meta?.theme,
       updatedAt: row.updated_at,
       coverSlide: row.slides?.[0] ?? null,
     }));

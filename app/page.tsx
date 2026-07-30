@@ -9,6 +9,7 @@ import TopBar from "@/components/TopBar";
 import { download, renderPng, slideFilename } from "@/lib/export";
 import { HAS_IMAGE } from "@/lib/slides";
 import { LEGACY_LS_KEY, flushSave, useStudio } from "@/lib/store";
+import { themeOf } from "@/lib/themes";
 import type { GenerateConfig, Meta, Slide } from "@/lib/types";
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -17,11 +18,12 @@ async function requestImage(
   projectId: string,
   slideId: string,
   prompt: string,
+  styleHint: string,
 ): Promise<string> {
   const res = await fetch("/api/generate-image", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ prompt, projectId, slideId }),
+    body: JSON.stringify({ prompt, projectId, slideId, styleHint }),
   });
   const data = (await res.json()) as { url?: string; error?: string };
   if (!res.ok || !data.url) {
@@ -160,7 +162,8 @@ export default function Home() {
     if (!s?.image || !currentId) return;
     setGenId(id, true);
     try {
-      const url = await requestImage(currentId, id, s.image.prompt);
+      const styleHint = themeOf(useStudio.getState().meta.theme).imageStyleHint;
+      const url = await requestImage(currentId, id, s.image.prompt, styleHint);
       patchImage(id, { dataUrl: url });
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -178,7 +181,8 @@ export default function Home() {
     for (let i = 0; i < todo.length; i++) {
       useStudio.getState().setGenAll(true, `${i + 1}/${todo.length}`);
       try {
-        const url = await requestImage(currentId, todo[i].id, todo[i].image!.prompt);
+        const styleHint = themeOf(useStudio.getState().meta.theme).imageStyleHint;
+        const url = await requestImage(currentId, todo[i].id, todo[i].image!.prompt, styleHint);
         patchImage(todo[i].id, { dataUrl: url });
       } catch {
         /* keep going; per-slide failures leave the placeholder */
@@ -213,7 +217,7 @@ export default function Home() {
     const { slides, meta, setExportBusy, setError } = useStudio.getState();
     setExportBusy(true);
     try {
-      const url = await renderPng(slides[i], i, slides.length, meta.brand);
+      const url = await renderPng(slides[i], i, slides.length, meta.brand, meta.theme);
       download(url, slideFilename(meta.title, i));
     } catch (e) {
       setError(`Export failed: ${e instanceof Error ? e.message : String(e)}`);
@@ -227,7 +231,7 @@ export default function Home() {
     setExportBusy(true);
     try {
       for (let i = 0; i < slides.length; i++) {
-        const url = await renderPng(slides[i], i, slides.length, meta.brand);
+        const url = await renderPng(slides[i], i, slides.length, meta.brand, meta.theme);
         download(url, slideFilename(meta.title, i));
         await wait(220);
       }
@@ -305,6 +309,7 @@ export default function Home() {
             current={st.current}
             setCurrent={st.setCurrent}
             onPatch={st.patchSlide}
+            onPatchMeta={st.patchMeta}
             onPatchImage={st.patchImage}
             onGenImage={genImage}
             genBusy={!!st.genIds[st.slides[st.current]?.id ?? ""]}

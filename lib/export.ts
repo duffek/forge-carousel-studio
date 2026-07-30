@@ -4,7 +4,7 @@ import { createElement } from "react";
 import { createRoot } from "react-dom/client";
 import { domToPng } from "modern-screenshot";
 import SlideView from "@/components/SlideView";
-import type { Slide } from "./types";
+import type { Slide, ThemeId } from "./types";
 import { pad2 } from "./slides";
 
 export const EXPORT_W = 1080;
@@ -57,13 +57,14 @@ export async function renderPng(
   index: number,
   total: number,
   brand: string,
+  theme?: ThemeId,
 ): Promise<string> {
   const host = document.createElement("div");
   host.style.cssText = `position:fixed;left:-99999px;top:0;width:${EXPORT_W}px;height:${EXPORT_H}px;background:#000;z-index:-1`;
   document.body.appendChild(host);
   const root = createRoot(host);
   root.render(
-    createElement(SlideView, { slide, index, total, brand, editable: false }),
+    createElement(SlideView, { slide, index, total, brand, theme, editable: false }),
   );
   try {
     try {

@@ -3,7 +3,9 @@
 import { CSSProperties, useRef, useState } from "react";
 import type { Layout, Meta, Slide, SlideImage } from "@/lib/types";
 import { HAS_IMAGE, LAYOUTS, LAYOUT_LABEL, pad2 } from "@/lib/slides";
+import { DEFAULT_THEME } from "@/lib/themes";
 import SlideView from "./SlideView";
+import ThemePicker from "./ThemePicker";
 
 export default function Editor({
   slides,
@@ -11,6 +13,7 @@ export default function Editor({
   current,
   setCurrent,
   onPatch,
+  onPatchMeta,
   onPatchImage,
   onGenImage,
   genBusy,
@@ -28,6 +31,7 @@ export default function Editor({
   current: number;
   setCurrent: (i: number) => void;
   onPatch: (id: string, patch: Partial<Slide>) => void;
+  onPatchMeta: (patch: Partial<Meta>) => void;
   onPatchImage: (id: string, patch: Partial<SlideImage>) => void;
   onGenImage: (id: string) => void;
   genBusy: boolean;
@@ -112,6 +116,7 @@ export default function Editor({
               index={current}
               total={total}
               brand={meta.brand}
+              theme={meta.theme}
               editable={true}
               onPatch={(f, t) => patch(f, t)}
             />
@@ -343,9 +348,16 @@ export default function Editor({
             </div>
           )}
 
-          {(s.layout === "cover" || s.layout === "closer") && (
-            <div className="insp-sec">
-              <div className="h">Branding</div>
+          <div className="insp-sec">
+            <div className="h">Branding</div>
+            <div className="insp-field">
+              <label>Theme · applies to the whole story</label>
+              <ThemePicker
+                value={meta.theme || DEFAULT_THEME}
+                onChange={(theme) => onPatchMeta({ theme })}
+              />
+            </div>
+            {(s.layout === "cover" || s.layout === "closer") && (
               <div className="toggle">
                 Show wordmark
                 <div
@@ -353,8 +365,8 @@ export default function Editor({
                   onClick={() => patch("wordmark", !s.wordmark)}
                 ></div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
@@ -395,6 +407,7 @@ export default function Editor({
               index={i}
               total={total}
               brand={meta.brand}
+              theme={meta.theme}
               editable={false}
             />
             <span className="n">{i + 1}</span>

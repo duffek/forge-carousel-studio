@@ -1,5 +1,7 @@
 export type Layout = "cover" | "statement" | "split" | "closer";
 
+export type ThemeId = "foundersforge" | "avante" | "summit";
+
 export type Tone = "Provocative" | "Analytical" | "Inspirational" | "Story-driven";
 
 export interface SlideImage {
@@ -28,6 +30,8 @@ export interface Meta {
   story: string;
   points: number;
   cta: string;
+  /** Slide theme; absent on pre-theme stories → FoundersForge. */
+  theme?: ThemeId;
 }
 
 export type View = "stories" | "compose" | "lineup" | "editor";
@@ -37,6 +41,7 @@ export interface ProjectSummary {
   title: string;
   slideCount: number;
   tone: string;
+  theme?: ThemeId;
   updatedAt: string;
   coverSlide: Slide | null;
 }
@@ -55,4 +60,5 @@ export interface GenerateConfig {
   tone: Tone;
   brand: string;
   cta: string;
+  theme?: ThemeId;
 }

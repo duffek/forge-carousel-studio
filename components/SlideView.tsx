@@ -1,8 +1,9 @@
 "use client";
 
 import { CSSProperties, ReactNode, useEffect, useRef } from "react";
-import type { Slide, SlideImage } from "@/lib/types";
+import type { Slide, SlideImage, ThemeId } from "@/lib/types";
 import { PH_PALETTES, hashStr, pad2 } from "@/lib/slides";
+import { themeOf } from "@/lib/themes";
 
 // parse *emphasis* -> orange italic
 export function renderEmph(text: string | undefined | null): ReactNode[] {
@@ -88,7 +89,7 @@ const SWIPE = (
   <svg className="arrow" viewBox="0 0 60 50" fill="none">
     <path
       d="M55 42 C 38 42, 20 32, 10 12 M10 12 L 4 22 M10 12 L 20 16"
-      stroke="#F08030"
+      stroke="currentColor"
       strokeWidth="3.2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -140,6 +141,7 @@ export default function SlideView({
   index,
   total,
   brand,
+  theme,
   editable,
   onPatch,
 }: {
@@ -147,20 +149,18 @@ export default function SlideView({
   index: number;
   total: number;
   brand?: string;
+  theme?: ThemeId;
   editable?: boolean;
   onPatch?: (field: TextField, text: string) => void;
 }) {
+  const t = themeOf(theme);
   const svStyle = {
     "--hscale": slide.hScale ?? 1,
     "--bscale": slide.bScale ?? 1,
   } as CSSProperties;
   const wm = (
     // eslint-disable-next-line @next/next/no-img-element
-    <img
-      className="wordmark-logo"
-      src="/images/ff-logo.png"
-      alt={brand || "FoundersForge"}
-    />
+    <img className="wordmark-logo" src={t.wordmark} alt={brand || t.name} />
   );
   const counter = (
     <div className="counter">
@@ -178,7 +178,7 @@ export default function SlideView({
 
   if (slide.layout === "cover") {
     return (
-      <div className="slide" data-layout="cover" style={svStyle}>
+      <div className="slide" data-layout="cover" data-theme={t.id} style={svStyle}>
         <div className="cover">
           <div className="photo">
             <ImageArea image={slide.image} />
@@ -200,7 +200,7 @@ export default function SlideView({
 
   if (slide.layout === "statement") {
     return (
-      <div className="slide" data-layout="statement" style={svStyle}>
+      <div className="slide" data-layout="statement" data-theme={t.id} style={svStyle}>
         <div className="beat">
           <T slide={slide} field="kicker" cls="body" ph="Setup line" editable={editable} onPatch={p} />
           <T slide={slide} field="headline" cls="accent xl" ph="THE BOLD POINT" editable={editable} onPatch={p} />
@@ -214,7 +214,7 @@ export default function SlideView({
 
   if (slide.layout === "split") {
     return (
-      <div className="slide" data-layout="split" style={svStyle}>
+      <div className="slide" data-layout="split" data-theme={t.id} style={svStyle}>
         <div className="composite">
           <div className="top">
             <T slide={slide} field="kicker" cls="body" ph="Setup line" editable={editable} onPatch={p} />
@@ -242,7 +242,7 @@ export default function SlideView({
 
   // closer
   return (
-    <div className="slide" data-layout="closer" style={svStyle}>
+    <div className="slide" data-layout="closer" data-theme={t.id} style={svStyle}>
       <div className="cover closer">
         <div className="photo">
           <ImageArea image={slide.image} />

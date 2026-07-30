@@ -33,6 +33,23 @@ const jetbrainsMono = localFont({
   ],
 });
 
+// Theme fonts — Avante (Poppins, Galano Grotesque substitute) and Summit (Anton)
+const poppins = localFont({
+  variable: "--font-poppins",
+  src: [
+    { path: "./fonts/poppins-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/poppins-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/poppins-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/poppins-700.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/poppins-500-italic.woff2", weight: "500", style: "italic" },
+  ],
+});
+
+const anton = localFont({
+  variable: "--font-anton",
+  src: [{ path: "./fonts/anton-400.woff2", weight: "400", style: "normal" }],
+});
+
 export const metadata: Metadata = {
   title: "FoundersForge · Carousel Studio",
   description:
@@ -47,7 +64,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${barlow.variable} ${openSans.variable} ${jetbrainsMono.variable}`}
+      className={`${barlow.variable} ${openSans.variable} ${jetbrainsMono.variable} ${poppins.variable} ${anton.variable}`}
     >
       <body>{children}</body>
     </html>
